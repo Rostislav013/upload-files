@@ -8,10 +8,24 @@ class App extends Component {
       this.state = {
         selectedFile: null,
         data: null  
-      }
-      console.log(this.state.selectedFile)
+      };
+     this.onChangeHandler = this.onChangeHandler.bind(this)
+     this.onClickShow = this.onClickShow.bind(this) 
+     this.componentDidMount = this.componentDidMount.bind(this) 
   }
   
+  componentDidMount() {
+    axios.get('http://localhost:8000/api', {errorHandle: false}).then((response) => {
+      console.log(response.data);
+      this.setState({
+        data: response.data
+      })
+  }).catch((error) => {
+      // handle this error here
+      console.warn('Not good man :(');
+  })
+  }
+
   onChangeHandler=event=>{
       this.setState({
         selectedFile: event.target.files[0],
@@ -19,6 +33,7 @@ class App extends Component {
       })
       console.log(this.state.selectedFile)
     console.log(event.target.files[0])
+    
 }
 
 
@@ -39,17 +54,23 @@ onClickHandler = () => {
         }).catch((error) => {
           // handle this error here
           console.warn('Not good man :(');
-      })
+      });
+
+      
 }
 
 onClickShow = () => {
-  axios.get('http://localhost:8000/files', {errorHandle: false}).then((response) => {
-    console.log('Everything is awesome.');
+  axios.get('http://localhost:8000/api', {errorHandle: false}).then((response) => {
+    console.log(response.data);
+    this.setState({
+      data: response.data
+    })
 }).catch((error) => {
     // handle this error here
     console.warn('Not good man :(');
 })
 }
+
 
   render() {
   return (
@@ -59,6 +80,16 @@ onClickShow = () => {
      
      {/*<a href='http://localhost:8000/files/1570724313793-UML.png' ><img src='http://localhost:8000/files/1570724313793-UML.png' style={{width: '200px'}}/></a>*/}
      <button type="button" onClick={this.onClickShow}>Show all</button>
+     <div>
+       <h3>Uploaded files</h3>
+      {this.state.data ? this.state.data.map(value =>(
+        <ul>
+          <li><a href={`http://localhost:8000/files/${value}`}>{`${value}`}</a></li>
+        </ul>
+        
+      )): 'hi'}
+      
+      </div>
     </div>
   );
 }

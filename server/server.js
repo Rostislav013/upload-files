@@ -21,6 +21,9 @@ let storage = multer.diskStorage({
 
 
 
+
+
+
 const upload = multer({ storage: storage }).single('file')
 
 app.post('/upload', function(req, res){
@@ -31,9 +34,48 @@ app.post('/upload', function(req, res){
             return res.status(500).json(err)
         }
         return res.status(200).send(req.file)
-
+       
  })
 });
+
+/*
+let arr = [];
+const testFolder = './public/files/';
+const fs = require('fs');
+fs.readdir(testFolder, (err, files) => {
+    
+   for(let i = 0; i<files.length; i++){
+   arr.push(files[i]);
+   }
+    console.log(arr[0]);
+
+ files.forEach(file => {
+  arr.push(file)
+
+ });
+ console.log(arr);
+});*/
+
+
+app.get('/api', (req, res) => {
+ 
+    const testFolder = './public/files/';
+    const fs = require('fs');
+
+    let arr = [];
+    fs.readdir(testFolder, (err, files) => {
+        files.forEach(file => {
+            arr.push(file)
+        });
+        console.log(arr);
+        res.send(arr)
+    });
+});
+
+
+
+
+
 
 app.listen(8000, function() {
 
