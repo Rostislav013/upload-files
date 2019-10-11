@@ -32,8 +32,16 @@ class App extends Component {
         loaded: 0,
       })
       console.log(this.state.selectedFile)
-    console.log(event.target.files[0])
-    
+      console.log(event.target.files[0])
+      axios.get('http://localhost:8000/api', {errorHandle: false}).then((response) => {
+        console.log(response.data);
+        this.setState({
+        data: response.data
+        })
+      }).catch((error) => {
+      // handle this error here
+      console.warn('Not good man :(');
+  })
 }
 
 
@@ -42,6 +50,9 @@ class App extends Component {
 //onClickhandle  will execute onClickHandler which sends a request to the server. 
 //The file from a state is appended as a file to FormData.
 onClickHandler = () => {
+  if(this.state.selectedFile) {
+
+  
   console.log(this.state.selectedFile.type)
   const data = new FormData() 
   data.append('file', this.state.selectedFile)
@@ -55,8 +66,10 @@ onClickHandler = () => {
           // handle this error here
           console.warn('Not good man :(');
       });
-
-      
+      this.onClickShow()
+    } else{
+      alert('Choose file to upload')
+    }    
 }
 
 onClickShow = () => {

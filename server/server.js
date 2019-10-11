@@ -14,7 +14,7 @@ let storage = multer.diskStorage({
         cb(null, './public/files') // it works HA! file saved at ./public/files
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname )
+        cb(null, file.originalname )
     }
 });
 
