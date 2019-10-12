@@ -55,11 +55,12 @@ app.get('/upload', function(req, res) {
 
 app.delete('/upload/:fileName', (req, res) => {
     const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName);
-       
+     
     fs.unlink(fileToDelete,  (err) => {
         if (err) throw err;
-        console.log('File deleted!');
+        //console.log('File deleted!');
     });
+    res.sendStatus(204);                   
 });
 
 app.get('/download/:fileName', (req, res) => {
@@ -72,6 +73,7 @@ app.get('/download/:fileName', (req, res) => {
           }
     }); 
 })
+
 
 
 app.listen(port, () => {

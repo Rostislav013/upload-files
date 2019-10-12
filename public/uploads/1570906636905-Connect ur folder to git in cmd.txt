@@ -1,0 +1,45 @@
+1. Create repro in git.com
+2. Copy that URL 
+3. in cmd locate to the project folder
+3.1 git init
+4. git status (checking that git is working)
+5. git remote add origin "URL"
+6. git remote -v
+7. git push origin master
+
+
+How to commit changes
+
+git add .
+git commit -m "ur comment"
+git push origin master
+
+
+
+How to create a branch
+1. go to master git checkout master
+2. Check if u r there: git branch  (*master)
+3. Create branch: git branch urBranchName
+4. Go to ur branch: git checkout urBranchName
+5. check if u r there now: git branch  (*urBranchName)
+
+Delete a Local GIT branch
+1. git checkout master (need to move out of ur branch)
+2. git branch -D branch_name
+3. git branch (branch will not be shown ib branch lists)
+
+ABOUT REBASE (usually if a few collaborations)
+at 1st do ur commits
+then
+1. git checkout master
+2. git pull
+3. git checkout urBranchName
+4. git rebase master
+
+
+ABOUT GETTING UPDATES TO LOCAL MASTER (usually if u do it alone)
+git pull origin master
+
+ABOUT MERGING
+in github.com
+Choose master Branch

@@ -16,17 +16,18 @@ const MyButton = styled(Button)({
   color: 'white',
   height: 32,
   padding: '0 10px',
-  margin: '0 5px',
+  margin: '5px',
 });
+
 const MyInput = styled(Input)({
   height: 32,
   padding: '0 10px',
-  
 });
 
 
 
 class Upload extends Component {
+  
   constructor(props) {
     super(props);
       this.state = {
@@ -45,7 +46,7 @@ class Upload extends Component {
 
   onChangeHandler = event => {
     this.setState({
-      selectedFile: event.target.files[0],  //console.log(this.state.selectedFile);
+      selectedFile: event.target.files[0],  
       loaded: 0,
     });
   }
@@ -55,13 +56,14 @@ class Upload extends Component {
 //The file from a state is appended as a file to FormData.
   onClickHandler = () => {
     if (this.state.selectedFile) {
-      console.log(this.state.selectedFile.type); //console type of uploaded file
+      // here can add filter for file type to upload this.state.selectedFile.type
       const data = new FormData() 
       data.append('file', this.state.selectedFile)
  
-      axios.post('/upload', data, {       //Axios will send a request to the endpoint with a binary file in Form Data
-      // receive two    parameter endpoint url ,form data
-      }).then(res => { // then print response status
+      axios.post('/upload', data,  {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }}).then(res => { 
         console.log(res.statusText)
         this.updateUploadedList();
       }).catch((error) => {
@@ -74,35 +76,33 @@ class Upload extends Component {
     }    
   }
 
+
+
   updateUploadedList = () => {
     axios.get('/upload', {errorHandle: false}).then((response) => {
-      
+
       this.setState({
         data: response.data
       })
       
-      console.log(this.state.data)
+      //console.log(this.state.data)
     }).catch((error) => {
-    // handle this error here
-    console.warn('get request not sent');
+        console.warn(error);
     })
     
 
-   
-
+  
   }
 
-  deleteFile = (value) => {
-    axios.delete(`/upload/${value}`);
-    this.updateUploadedList()
+  deleteFile = (title) => {
+    axios.delete(`/upload/${title}`).catch( function(error) {
+      console.log(error);
+  });
+    this.updateUploadedList();
   }
 
-  downloadFile = (value) => {
-    //axios.delete(`/upload/${value}`);
-    //console.log(value)
-    window.open(`/download/${value}`)
-    //axios.get(`/download/${value}`);
-    //this.updateUploadedList()
+  downloadFile = (title) => {
+    window.open(`http://localhost:8000/download/${title}`)
   }
  
 
@@ -121,17 +121,17 @@ class Upload extends Component {
 
       <div>
         <h3 style={{margin: '10px 20px'}}>Uploaded files</h3>
-        {this.state.data ? this.state.data.map((value, key) => (
+        {this.state.data ? this.state.data.map((title, key) => (
             <div key={key} className='files-container'>
               
               
                 <div style={{width: '500px'}}>
-                  <p style={{margin: '5px 20px'}}>{`${value}`}</p>
+                  <p style={{margin: '5px 20px'}}>{`${title}`}</p>
                 </div>
                 
                 <div style={{margin: '5px 20px', }}>
-                  <MyButton onClick={() => this.downloadFile(value)}>DOWNLOAD</MyButton>
-                  <MyButton onClick={() => this.deleteFile(value)}>DELETE</MyButton>
+                  <MyButton onClick={() => this.downloadFile(title)}>DOWNLOAD</MyButton>
+                  <MyButton onClick={() => this.deleteFile(title)}>DELETE</MyButton>
                 </div>
               
               
