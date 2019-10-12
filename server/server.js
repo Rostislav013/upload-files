@@ -2,19 +2,22 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 const cors = require('cors');
+const port = 8000;
+const path = require('path');
+const fs = require('fs');
 
 app.use(cors());
 
-//app.use(express.static(__dirname + '/public/files')); // added
+//app.use(express.static(__dirname + './public')); // added
 app.use(express.static('public'))
-// can get files this way http://localhost:8000/files/1570724313793-UML.png
+// can get files this way http://localhost:8000/uploads/1570724313793-UML.png
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/files') // it works HA! file saved at ./public/files
+        cb(null, './public/uploads') // it works HA! file saved at ./public/files
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname )
+        cb(null, Date.now() + '-' + file.originalname )
     }
 });
 
@@ -38,47 +41,39 @@ app.post('/upload', function(req, res){
  })
 });
 
-/*
-let arr = [];
-const testFolder = './public/files/';
-const fs = require('fs');
-fs.readdir(testFolder, (err, files) => {
+
+
+app.get('/upload', function(req, res) {
+    const filesFolder = './public/uploads/';
     
-   for(let i = 0; i<files.length; i++){
-   arr.push(files[i]);
-   }
-    console.log(arr[0]);
+    fs.readdir(filesFolder, (err, files) => {
+        if (err) throw err;
+        res.send(files);
+     });
+});
+  
 
- files.forEach(file => {
-  arr.push(file)
-
- });
- console.log(arr);
-});*/
-
-
-app.get('/api', (req, res) => {
- 
-    const testFolder = './public/files/';
-    const fs = require('fs');
-
-    let arr = [];
-    fs.readdir(testFolder, (err, files) => {
-        files.forEach(file => {
-            arr.push(file)
-        });
-        console.log(arr);
-        res.send(arr)
+app.delete('/upload/:fileName', (req, res) => {
+    const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName);
+       
+    fs.unlink(fileToDelete,  (err) => {
+        if (err) throw err;
+        console.log('File deleted!');
     });
 });
 
+app.get('/download/:fileName', (req, res) => {
+    const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
+    res.download(file, (err) => {
+        if (err) {
+            console.log(err)
+          } else {
+            console.log('File downloaded')
+          }
+    }); 
+})
 
 
-
-
-
-app.listen(8000, function() {
-
-    console.log('App running on port 8000');
-
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
