@@ -1,6 +1,29 @@
 import React, { Component }  from 'react';
 import axios from 'axios';
 import './Upload.css';
+import { styled } from '@material-ui/styles';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
+
+
+
+
+const MyButton = styled(Button)({
+  background: '#990ae3',
+  border: 0,
+  borderRadius: 3,
+  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+  color: 'white',
+  height: 32,
+  padding: '0 10px',
+  margin: '0 5px',
+});
+const MyInput = styled(Input)({
+  height: 32,
+  padding: '0 10px',
+  
+});
+
 
 
 class Upload extends Component {
@@ -57,6 +80,7 @@ class Upload extends Component {
       this.setState({
         data: response.data
       })
+      
       console.log(this.state.data)
     }).catch((error) => {
     // handle this error here
@@ -72,28 +96,50 @@ class Upload extends Component {
     axios.delete(`/upload/${value}`);
     this.updateUploadedList()
   }
+
   downloadFile = (value) => {
     //axios.delete(`/upload/${value}`);
     //console.log(value)
     window.open(`/download/${value}`)
-    axios.get(`/download/${value}`);
+    //axios.get(`/download/${value}`);
     //this.updateUploadedList()
   }
+ 
+
 
   render() {
+    
+    
   return (
-    <div>
-      <input type="file" name="file" onChange={this.onChangeHandler}/>
-      <button type="button" onClick={this.onClickHandler}>Upload</button>
+    <div className='func'> 
+       <div className='upload-container'> 
+        <MyInput type="file" name="file" onChange={this.onChangeHandler}  />
+        <MyButton onClick={this.onClickHandler}>Upload</MyButton>
+      </div>
+
+     
+
       <div>
-        <h3>Uploaded files</h3>
-        {this.state.data ? this.state.data.map((value, key) =>(
-        <ul>
-          <li key={key}><a href={`http://localhost:8000/uploads/${value}`}>{`${value}`}</a></li>
-          <button onClick={() => this.deleteFile(value)}>DELETE</button>
-          <button onClick={() => this.downloadFile(value)}>DOWNLOAD</button>
-        </ul>
-        )): 'Loading'}
+        <h3 style={{margin: '10px 20px'}}>Uploaded files</h3>
+        {this.state.data ? this.state.data.map((value, key) => (
+            <div key={key} className='files-container'>
+              
+              
+                <div style={{width: '500px'}}>
+                  <p style={{margin: '5px 20px'}}>{`${value}`}</p>
+                </div>
+                
+                <div style={{margin: '5px 20px', }}>
+                  <MyButton onClick={() => this.downloadFile(value)}>DOWNLOAD</MyButton>
+                  <MyButton onClick={() => this.deleteFile(value)}>DELETE</MyButton>
+                </div>
+              
+              
+            </div>
+          )): 'No files'}
+        
+      
+        
       
       </div>
     </div>

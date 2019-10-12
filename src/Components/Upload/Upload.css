@@ -1,3 +1,18 @@
-button {
-    background-color: #990ae3;
+.files-container {
+    display: flex;
+    
+}
+.upload-container{
+   margin: 30px 20px;
+   display: flex;
+}
+
+@media screen and (max-device-width: 800px) {
+    .files-container {
+        display: block;
+    }
+    .upload-container{
+       
+        display: flex;
+     }
 }
