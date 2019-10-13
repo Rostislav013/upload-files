@@ -7,60 +7,40 @@ const path = require('path');
 const fs = require('fs');
 
 app.use(cors());
-
-//app.use(express.static(__dirname + './public')); // added
 app.use(express.static('public'))
-// can get files this way http://localhost:8000/uploads/1570724313793-UML.png
 
 let storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/uploads') // it works HA! file saved at ./public/files
+    destination:  (req, file, cb) => {
+        cb(null, './public/uploads')                    // it works HA! file saved at ./public/uploads
     },
-    filename: function (req, file, cb) {
+    filename:  (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname )
     }
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello people');
+});
 
-
-
-
-
+app.get('/upload', (req, res) => {
+    const filesFolder = './public/uploads/';
+    fs.readdir(filesFolder, (err, files) => {
+        if (err) throw err;
+        res.send(files);
+        //console.log(files)
+     });
+});
 
 const upload = multer({ storage: storage }).single('file')
-
-app.post('/upload', function(req, res){
-    upload(req, res, function (err) {
+app.post('/upload', (req, res) => {
+    upload(req, res,  (err) => {
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)
         } else if (err) {
             return res.status(500).json(err)
         }
-        return res.status(200).send(req.file)
-       
- })
-});
-
-
-
-app.get('/upload', function(req, res) {
-    const filesFolder = './public/uploads/';
-    
-    fs.readdir(filesFolder, (err, files) => {
-        if (err) throw err;
-        res.send(files);
-     });
-});
-  
-
-app.delete('/upload/:fileName', (req, res) => {
-    const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName);
-     
-    fs.unlink(fileToDelete,  (err) => {
-        if (err) throw err;
-        //console.log('File deleted!');
-    });
-    res.sendStatus(204);                   
+            return res.status(200).send(req.file)
+    })
 });
 
 app.get('/download/:fileName', (req, res) => {
@@ -68,13 +48,19 @@ app.get('/download/:fileName', (req, res) => {
     res.download(file, (err) => {
         if (err) {
             console.log(err)
-          } else {
+        } else {
             console.log('File downloaded')
-          }
+        }
     }); 
 })
 
-
+app.delete('/upload/:fileName', (req, res) => {
+    const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName);
+    fs.unlink(fileToDelete,  (err) => {
+        if (err) throw err;
+    });
+    res.sendStatus(204);               
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

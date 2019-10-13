@@ -5,3 +5,5 @@
 - https://internodejs.com/blogs/node-js/file-type-validations-in-expressjs-multer
 - https://malcoded.com/posts/react-file-upload/
 - https://stackoverflow.com/questions/25970523/restful-what-should-a-delete-response-body-contain
+- https://attacomsian.com/blog/http-requests-axios
+- And many others
