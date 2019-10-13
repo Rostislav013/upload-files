@@ -6,7 +6,7 @@ body {
     display: flex;
 }
 
-.upload-container{
+.upload-container {
    margin: 30px 20px;
    display: flex;
 }
@@ -23,13 +23,17 @@ body {
 .buttons-container {
     margin: 5px 20px;
 }
+
 .fileName-container {
     width: 450px;
-
 }
-.hideme {
+
+.hideMe {
     visibility: hidden;
 }
+
+
+
 @media screen and (max-device-width: 800px) {
 
     .files-container {
@@ -42,8 +46,8 @@ body {
 
      .fileName-container {
         width: 100%;
-    
     }
+
     .buttons-container {
         text-align: left;
         margin-left: 16px;

@@ -52,14 +52,14 @@ class Upload extends Component {
 
   onClickHandler = () => {
     const config = {
-      onUploadProgress: progressEvent => {
+    onUploadProgress: progressEvent => {
         let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        //console.log(percentCompleted)
         this.setState({
           progress: percentCompleted
-        })
+        });
       }
     }
+    
     if (this.state.selectedFile) {                  // here can add filter for file type to upload this.state.selectedFile.type
       const data = new FormData() 
       data.append('file', this.state.selectedFile)
@@ -98,7 +98,6 @@ class Upload extends Component {
         console.error(err);
     }
     setTimeout(function(){ this.updateUploadedList(); }.bind(this), 1000);
-  
   }
 
   downloadFile = (title) => {
@@ -109,7 +108,7 @@ class Upload extends Component {
   render() {
    return (
     <div>
-     <div className={this.state.progress === 100 || this.state.progress === 0 ? 'progress-bar hideme' : 'progress-bar'}><LinearProgress variant="determinate" value={this.state.progress} /></div>
+     <div className={this.state.progress === 100 || this.state.progress === 0 ? 'progress-bar hideMe' : 'progress-bar'}><LinearProgress variant="determinate" value={this.state.progress} /></div>
      <p className='basic-text'>Choose a file and click on UPLOAD button to upload the file</p>
       <div className='upload-container'> 
        
@@ -119,8 +118,7 @@ class Upload extends Component {
         </form>
         
       </div>
-      
-   
+         
       <div>
         <h3 className='headerText'>Uploaded files</h3>
         {this.state.data ? this.state.data.map((title, key) => (
