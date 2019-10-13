@@ -9,18 +9,21 @@ const fs = require('fs');
 app.use(cors());
 app.use(express.static('public'))
 
+
 let storage = multer.diskStorage({
     destination:  (req, file, cb) => {
         cb(null, './public/uploads')                    // it works HA! file saved at ./public/uploads
     },
     filename:  (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname )
+        cb(null, Date.now() + '-' + file.originalname.toLowerCase().replace(/[^a-z0-9.()]/g, "-") )
     }
 });
+
 
 app.get('/', (req, res) => {
     res.send('Hello people');
 });
+
 
 app.get('/upload', (req, res) => {
     const filesFolder = './public/uploads/';
@@ -30,6 +33,7 @@ app.get('/upload', (req, res) => {
         //console.log(files)
      });
 });
+
 
 const upload = multer({ storage: storage }).single('file')
 app.post('/upload', (req, res) => {
@@ -43,6 +47,7 @@ app.post('/upload', (req, res) => {
     })
 });
 
+
 app.get('/download/:fileName', (req, res) => {
     const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
     res.download(file, (err) => {
@@ -54,6 +59,7 @@ app.get('/download/:fileName', (req, res) => {
     }); 
 })
 
+
 app.delete('/upload/:fileName', (req, res) => {
     const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName);
     fs.unlink(fileToDelete,  (err) => {
@@ -61,6 +67,7 @@ app.delete('/upload/:fileName', (req, res) => {
     });
     res.sendStatus(204);               
 });
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

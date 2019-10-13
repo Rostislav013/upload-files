@@ -1,3 +1,7 @@
+- npm install
+- npm run dev
+
+
 - Material used: 
 - https://programmingwithmosh.com/javascript/react-file-upload-proper-server-side-nodejs-easy/
 - https://codeburst.io/handling-file-uploads-on-node-server-using-multer-part-a-backend-a789e0003e04

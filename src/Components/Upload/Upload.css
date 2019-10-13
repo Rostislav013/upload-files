@@ -20,6 +20,16 @@ body {
     padding-top: 10px;
 }
 
+.buttons-container {
+    margin: 5px 20px;
+}
+.fileName-container {
+    width: 450px;
+
+}
+.hideme {
+    visibility: hidden;
+}
 @media screen and (max-device-width: 800px) {
 
     .files-container {
@@ -29,4 +39,13 @@ body {
     .upload-container{
         display: block;
      }
+
+     .fileName-container {
+        width: 100%;
+    
+    }
+    .buttons-container {
+        text-align: left;
+        margin-left: 16px;
+    }
 }
