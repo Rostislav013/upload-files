@@ -6,10 +6,6 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 
-
-
-
-
 const MyButton = styled(Button)({
   background: '#990ae3',
   border: 0,
@@ -28,7 +24,9 @@ class Upload extends Component {
       this.state = {
         selectedFile: null,
         data: null,
-        progress: 0, 
+        progress: 0,
+        delButton: false,
+        buttonUplod: false
       };
 
      this.onChangeHandler = this.onChangeHandler.bind(this);
@@ -43,6 +41,19 @@ class Upload extends Component {
   }
 
 
+  updateUploadedList = () => {
+    axios.get('/upload', {errorHandle: false}).then((response) => {
+      this.setState({data: response.data})
+    }).catch((error) => {
+      console.warn(`Get request not sent. ${error}`);
+    })
+    this.setState({
+      buttonUplod: false,                                                                   //activate upload button after 1 second
+    });
+    setTimeout(function() {this.setState({delButton: false});}.bind(this), 1000);           //activate delete button after 1 second
+  }
+
+
   onChangeHandler = event => {
     this.setState({
       selectedFile: event.target.files[0],  
@@ -53,19 +64,22 @@ class Upload extends Component {
   onClickHandler = () => {
     const config = {
     onUploadProgress: progressEvent => {
-        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)  // value of progress bar
         this.setState({
           progress: percentCompleted
         });
       }
     }
-    
-    if (this.state.selectedFile) {                  // here can add filter for file type to upload this.state.selectedFile.type
+
+    if (this.state.selectedFile) {                                                   // here can add filter for file type to upload this.state.selectedFile.type
+      this.setState({
+        buttonUplod: true                                                                       //disable upload button    
+      });
       const data = new FormData() 
       data.append('file', this.state.selectedFile)
       axios.post('/upload', data, config, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
         }
         }).then(res => { 
         console.log(res.statusText)
@@ -81,23 +95,19 @@ class Upload extends Component {
   }
 
 
-  updateUploadedList = () => {
-    axios.get('/upload', {errorHandle: false}).then((response) => {
-      this.setState({data: response.data})
-    }).catch((error) => {
-      console.warn(`Get request not sent. ${error}`);
-    })
-  }
-
-  
   deleteFile = async (title) => {
+    this.setState({
+      delButton: true                                                   //disable delete button
+    });
     try {
         const res = await axios.delete(`/upload/${title}`);
-        console.log(res.status);
+        //console.log(res.status);
     } catch (err) {
         console.error(err);
     }
-    setTimeout(function(){ this.updateUploadedList(); }.bind(this), 1000);
+    setTimeout(function(){ 
+      this.updateUploadedList();
+      }.bind(this), 1000);
   }
 
   downloadFile = (title) => {
@@ -114,7 +124,7 @@ class Upload extends Component {
        
         <form ref={form => this.form = form}>
           <input type="file" name="file"  onChange={this.onChangeHandler} />
-          <MyButton onClick={this.onClickHandler}>Upload</MyButton>
+          <MyButton onClick={this.onClickHandler} disabled={this.state.buttonUplod}>Upload</MyButton>
         </form>
         
       </div>
@@ -130,7 +140,7 @@ class Upload extends Component {
                 
             <div className='buttons-container'>
               <MyButton onClick={() => this.downloadFile(title)}>DOWNLOAD</MyButton>
-              <MyButton onClick={() =>{ if (window.confirm(`Are you sure you want to delete ${title.slice(14)}?`)) this.deleteFile(title) }}>DELETE</MyButton>
+              <MyButton onClick={() =>{ if (window.confirm(`Are you sure you want to delete ${title.slice(14)}?`)) this.deleteFile(title) }} disabled={this.state.delButton} >DELETE</MyButton>
             </div>
              
             </div>
