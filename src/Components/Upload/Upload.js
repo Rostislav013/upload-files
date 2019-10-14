@@ -48,7 +48,7 @@ class Upload extends Component {
       console.warn(`Get request not sent. ${error}`);
     })
     this.setState({
-      buttonUplod: false,                                                                   //activate upload button after 1 second
+      buttonUplod: false,                                                                   //activate upload button
     });
     setTimeout(function() {this.setState({delButton: false});}.bind(this), 1000);           //activate delete button after 1 second
   }
@@ -73,7 +73,7 @@ class Upload extends Component {
 
     if (this.state.selectedFile) {                                                   // here can add filter for file type to upload this.state.selectedFile.type
       this.setState({
-        buttonUplod: true                                                                       //disable upload button    
+        buttonUplod: true                                                            //disable upload button    
       });
       const data = new FormData() 
       data.append('file', this.state.selectedFile)
@@ -88,7 +88,7 @@ class Upload extends Component {
           console.warn(`Post request not sent. Error message: ${error}`);
         });
     } else {
-      alert('Choose file to upload')
+      alert('Choose a file to upload')
     }  
     this.form.reset(); 
     
