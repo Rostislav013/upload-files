@@ -49,22 +49,18 @@ app.post('/upload', (req, res) => {
     })
 });
 
-// not tested yet
-app.get('/download/:fileName', (req, res) => {
-    
-    const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
-    //console.log(typeof file)
 
+app.get('/download/:fileName', (req, res) => {
+    const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
+
+    //req.params.fileName validation
     let regex = /[^a-z0-9.()-]/
-    let isValid = regex.test(req.params.fileName);
-    console.log(isValid)
-    //res.send('Nice try');
-    if (isValid) {
+    let notValid = regex.test(req.params.fileName);
+   
+    // if notValid is true means url contains not valid characters
+    if (notValid) {
         res.send('Nice try');
-        
-               
     } else {
-        console.log('All good')
         res.download(file, (err) => {
             if (err) {
                 console.log(err)
