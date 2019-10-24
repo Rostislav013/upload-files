@@ -49,20 +49,30 @@ app.post('/upload', (req, res) => {
     })
 });
 
-
+// not tested yet
 app.get('/download/:fileName', (req, res) => {
+    
     const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
-    res.download(file, (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log('File downloaded')
-        }
-    }); 
+    //console.log(typeof file)
+
+    let regex = /[^a-z0-9.()]/
+    let isValid = regex.test(file);
+    if (isValid) {
+        res.download(file, (err) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('File downloaded')
+            }
+        }); 
+    } else {
+        res.send('Nice try');
+    }
 })
 
 
 app.delete('/upload/:fileName', (req, res) => {
+    
     const fileToDelete = path.join(__dirname, '../public/uploads/', req.params.fileName); // __dirname - tells  the absolute path of the directory containing the currently executing file
    
     fs.unlink(fileToDelete,  (err) => {
