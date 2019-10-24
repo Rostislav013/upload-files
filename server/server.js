@@ -55,18 +55,23 @@ app.get('/download/:fileName', (req, res) => {
     const file = path.join(__dirname, '../public/uploads/', req.params.fileName);
     //console.log(typeof file)
 
-    let regex = /[^a-z0-9.()]/
-    let isValid = regex.test(file);
+    let regex = /[^a-z0-9.()-]/
+    let isValid = regex.test(req.params.fileName);
+    console.log(isValid)
+    //res.send('Nice try');
     if (isValid) {
+        res.send('Nice try');
+        
+               
+    } else {
+        console.log('All good')
         res.download(file, (err) => {
             if (err) {
                 console.log(err)
             } else {
                 console.log('File downloaded')
             }
-        }); 
-    } else {
-        res.send('Nice try');
+        });  
     }
 })
 
