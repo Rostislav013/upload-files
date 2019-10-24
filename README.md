@@ -1,4 +1,5 @@
 - npm install
+- add .env file in project folder
 - npm run dev
 
 
