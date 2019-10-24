@@ -36,6 +36,7 @@ class Upload extends Component {
      
   }
   
+
   componentDidMount() {
     this.updateUploadedList();
   }
@@ -44,6 +45,7 @@ class Upload extends Component {
   updateUploadedList = () => {
     axios.get('/upload', {errorHandle: false}).then((response) => {
       this.setState({data: response.data})
+      console.log('updated')
     }).catch((error) => {
       console.warn(`Get request not sent. ${error}`);
     })
@@ -56,9 +58,12 @@ class Upload extends Component {
 
   onChangeHandler = event => {
     this.setState({
-      selectedFile: event.target.files[0],  
+      selectedFile: event.target.files[0],        // event.target.files[0] holds the actual file and its details
     });
+    //console.log(event.target.files[0]);
+    
   }
+
 
 
   onClickHandler = () => {
@@ -70,13 +75,13 @@ class Upload extends Component {
         });
       }
     }
-
-    if (this.state.selectedFile) {                                                   // here can add filter for file type to upload this.state.selectedFile.type
+    // send file to server
+    if (this.state.selectedFile) {                            // here can add filter for file type to upload this.state.selectedFile.type
       this.setState({
-        buttonUplod: true                                                            //disable upload button    
+        buttonUplod: true                                      //disable upload button    
       });
-      const data = new FormData() 
-      data.append('file', this.state.selectedFile)
+      const data = new FormData();                             //FormData() - interface to construct a set of key/value pairs representing form fields and their values
+      data.append('file', this.state.selectedFile)              // append value of this.state.selectedFile to 'file' name                               
       axios.post('/upload', data, config, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -96,18 +101,23 @@ class Upload extends Component {
 
 
   deleteFile = async (title) => {
-    this.setState({
+    
+   /* this.setState({
       delButton: true                                                   //disable delete button
-    });
+    });*/
     try {
         const res = await axios.delete(`/upload/${title}`);
         //console.log(res.status);
+        if(res.status === 204){this.updateUploadedList()}   // this way update faster n on right time
+
     } catch (err) {
         console.error(err);
     }
-    setTimeout(function(){ 
+   
+   /* setTimeout(function(){ 
       this.updateUploadedList();
-      }.bind(this), 1000);
+      }.bind(this), 1000);*/
+     
   }
 
   downloadFile = (title) => {
